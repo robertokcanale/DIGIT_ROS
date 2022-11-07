@@ -1,0 +1,6 @@
+#Name of the experiment according
+experiment_name: "vertical_grasping" 
+#Item used in the experiment
+item_name: "pringles_can"
+#Experiment number, 1-5
+experiment_number_int: 1

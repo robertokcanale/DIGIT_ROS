@@ -1,0 +1,5 @@
+<launch>
+  <arg name="device" value="/dev/ttyUSB0" />
+  <node name="data_collection_node" pkg="DIGIT_ROS" type="single_contact.py" output="screen"  args="$(arg device)"/>
+  <rosparam file="$(find digit_grasping_data_collection)/config/collection_settings.yaml" command="load" />
+</launch>
