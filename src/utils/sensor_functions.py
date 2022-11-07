@@ -4,16 +4,26 @@ import cv2
 import time
 import numpy as np
 
-def compute_baseline(sensor):
-    num_images = len(sensor["baseline"])
+# def compute_baseline(sensor):
+#     num_images = len(sensor["baseline"])
 
-    canvas = np.zeros(sensor["baseline"][0].shape)
-    for image in sensor["baseline"]:
+#     canvas = np.zeros(sensor["baseline"][0].shape)
+#     for image in sensor["baseline"]:
+#         canvas += image
+#     canvas /= num_images
+#     sensor["baseline"] = canvas.astype(np.uint8)
+#     sensor["baseline"] = cv2.GaussianBlur(sensor["baseline"],(11,11),0)
+#     return sensor
+
+def compute_baseline(baseline):
+    num_images = len(baseline)
+    canvas = np.zeros(baseline[0].shape)
+    for image in baseline:
         canvas += image
     canvas /= num_images
-    sensor["baseline"] = canvas.astype(np.uint8)
-    sensor["baseline"] = cv2.GaussianBlur(sensor["baseline"],(11,11),0)
-    return sensor
+    baseline = canvas.astype(np.uint8)
+    baseline = cv2.GaussianBlur(baseline,(11,11),0)
+    return baseline
 
 def initialize_sensor(sensor_serial_number, sensor_name, fps = Digit.STREAMS["QVGA"]["fps"]["60fps"], intensity = 10):
     sensor = {}

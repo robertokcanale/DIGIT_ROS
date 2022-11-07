@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(digit_grasping_data_collection)
+project(DIGIT_ROS)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -11,37 +11,34 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
-  robotiq_modbus_rtu
-  robotiq_2f_gripper_control
+  sensor_msgs
+  vision_msgs
+  geometry_msgs
+  message_generation
 )
-
-## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
-
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
 catkin_python_setup()
 
-################################################
-## Declare ROS messages, services and actions ##
-################################################
 
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES digit_grasping_data_collection
-   CATKIN_DEPENDS roscpp rospy std_msgs robotiq_2f_gripper_control robotiq_modbus_rtu 
+   CATKIN_DEPENDS roscpp rospy std_msgs sensor_msgs vision_msgs geometry_msgs message_generation
 )
 
 ###########
 ## Build ##
 ###########
 
-## Specify additional locations of header files
-## Your package locations should be listed before other locations
 include_directories(
   ${catkin_INCLUDE_DIRS}
+)
+
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+  geometry_msgs
 )
 
 ## Mark executable scripts (Python etc.) for installation

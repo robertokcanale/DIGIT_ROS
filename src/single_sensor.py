@@ -4,18 +4,12 @@ import cv2
 import numpy as np
 from utils.contact_area_functions import *
 from utils.sensor_functions import *
+from DIGIT import DIGIT, DIGIT_DICTIONARY
 
 SENSOR_SERIAL_NUMBER_LIST = ["D20492"]
 SENSOR_NAME_LIST = ["LeftGripper"]
 FPS_CONFIG = Digit.STREAMS["QVGA"]["fps"]["60fps"]
 DIGIT_INTENSITY = 10
-
-class DIGIT:
-    def __init__ (self, SERIAL_NUMBER, SENSOR_NAME, FPS_CONFIG = Digit.STREAMS["QVGA"]["fps"]["60fps"], intensity:int = 10):
-        self.sensor = initialize_sensor(SERIAL_NUMBER, SENSOR_NAME, FPS_CONFIG)            
-       
-        self.baseline = cv2.cvtColor(self.sensor["baseline"], cv2.COLOR_BGR2LAB)
-
 
 
 def main():
