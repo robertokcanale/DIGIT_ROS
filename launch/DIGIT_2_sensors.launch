@@ -1,0 +1,34 @@
+<launch>
+  <node  pkg="digit_ros" name="digit_ros" type="single_sensor.py" output="screen" ns="DIGIT"/>
+    <!-- First DIGIT --> 
+    <!-- topic name for DIGIT serial Number -->
+    <param name="sn1" type="str" value="D429" />
+    <!-- topic name for DIGIT -->    
+    <param name="name1" type="str" value="LeftGripper" />
+    <!-- topic name for real time rgb image -->
+    <param name="rgb_img1" type="str" value="rgb_img" />
+    <!-- topic name for real time lab image -->
+    <param name="lab_img1" type="str" value="lab_img" />
+    <!-- topic name for difference rgb image -->
+    <param name="diff_rgb_img1" type="str" value="diff_rgb_img" />
+    <!-- topic name for dufferebce lab image -->
+    <param name="diff_lab_img1" type="str" value="diff_lab_img" />
+    <!-- topic name for real time image with contact centers drawn -->
+    <param name="output_img1" type="str" value="output_img" />   
+    
+    <!-- Second DIGIT -->
+    <!-- topic name for DIGIT serial Number -->
+    <param name="sn2" type="str" value="D428" />
+    <!-- topic name for DIGIT -->    
+    <param name="name2" type="str" value="RightGripper" />
+    <!-- topic name for real time rgb image -->
+    <param name="rgb_img2" type="str" value="rgb_img" />
+    <!-- topic name for real time lab image -->
+    <param name="lab_img2" type="str" value="lab_img" />
+    <!-- topic name for difference rgb image -->
+    <param name="diff_rgb_img2" type="str" value="diff_rgb_img" />
+    <!-- topic name for dufferebce lab image -->
+    <param name="diff_lab_img2" type="str" value="diff_lab_img" />
+    <!-- topic name for real time image with contact centers drawn -->
+    <param name="output_img2" type="str" value="output_img" />
+</launch>
