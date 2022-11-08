@@ -1,5 +1,17 @@
 <launch>
-  <arg name="device" value="/dev/ttyUSB0" />
-  <node name="data_collection_node" pkg="DIGIT_ROS" type="single_contact.py" output="screen"  args="$(arg device)"/>
-  <rosparam file="$(find digit_grasping_data_collection)/config/collection_settings.yaml" command="load" />
+  <node  pkg="digit_ros" name="digit_ros" type="single_sensor.py" output="screen" ns="DIGIT"/>
+    <!-- topic name for DIGIT serial Number -->
+    <param name="sn" type="str" value="D429" />
+    <!-- topic name for DIGIT -->    
+    <param name="name" type="str" value="LeftGripper" />
+    <!-- topic name for real time rgb image -->
+    <param name="rgb_img" type="str" value="rgb_img" />
+    <!-- topic name for real time lab image -->
+    <param name="lab_img" type="str" value="lab_img" />
+    <!-- topic name for difference rgb image -->
+    <param name="diff_rgb_img" type="str" value="diff_rgb_img" />
+    <!-- topic name for dufferebce lab image -->
+    <param name="diff_lab_img" type="str" value="diff_lab_img" />
+    <!-- topic name for real time image with contact centers drawn -->
+    <param name="output_img" type="str" value="output_img" />
 </launch>

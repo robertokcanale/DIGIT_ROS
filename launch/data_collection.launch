@@ -1,5 +1,0 @@
-<launch>
-  <arg name="device" value="/dev/ttyUSB0" />
-  <node name="data_collection_node" pkg="digit_grasping_data_collection" type="grasping_area_2_sensors_record.py" output="screen"  args="$(arg device)"/>
-  <rosparam file="$(find digit_grasping_data_collection)/config/collection_settings.yaml" command="load" />
-</launch>
