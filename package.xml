@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>DIGIT_ROS</name>
+  <name>digit_ros</name>
   <version>0.0.0</version>
   <description>The DIGIT_ROS package</description>
 

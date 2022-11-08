@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(DIGIT_ROS)
+project(digit_ros)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -22,6 +22,11 @@ find_package(catkin REQUIRED COMPONENTS
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
 catkin_python_setup()
 
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+  geometry_msgs
+)
 
 catkin_package(
    CATKIN_DEPENDS roscpp rospy std_msgs sensor_msgs vision_msgs geometry_msgs message_generation
@@ -35,11 +40,7 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-generate_messages(
-  DEPENDENCIES
-  std_msgs
-  geometry_msgs
-)
+
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
