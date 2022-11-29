@@ -39,9 +39,6 @@ class DIGIT:
         self.baseline_bgr = compute_baseline(baseline)
         self.baseline_lab = cv2.cvtColor(self.baseline_bgr, cv2.COLOR_BGR2LAB)
         
-        #Setting all the publishers
-        self.DIGIT_Publishers()
-        
     def DIGIT_Publishers(self,rgb_img_topic:str = "rgb", 
                          lab_img_topic:str = "lab", 
                          diff_rgb_img_topic:str = "diff_rgb",

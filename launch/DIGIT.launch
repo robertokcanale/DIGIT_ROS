@@ -13,5 +13,7 @@
     <!-- topic name for dufferebce lab image -->
     <param name="diff_lab_img" type="str" value="diff_lab_img" />
     <!-- topic name for real time image with contact centers drawn -->
-    <param name="output_img" type="str" value="output_img" />
+    <param name="output_img" type="str" value="output_img" />    
+    <!-- topic name for real time image with contact centers drawn -->
+    <param name="contact_center_topic" type="str" value="contact_center" />
 </launch>

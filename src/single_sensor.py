@@ -18,9 +18,10 @@ def main():
     diff_rgb_img = rospy.get_param(ns + "diff_rgb_img")
     diff_lab_img = rospy.get_param(ns + "diff_lab_img")
     output_img = rospy.get_param(ns + "output_img")
+    contact_center_topic = rospy.get_param(ns + "contact_center_topic")
     
     digit = DIGIT(sn, name)
-    digit.DIGIT_Publishers(rgb_img, lab_img, diff_rgb_img, diff_lab_img, output_img)
+    digit.DIGIT_Publishers(rgb_img, lab_img, diff_rgb_img, diff_lab_img, output_img, contact_center_topic)
     while rospy.is_shutdown:
         digit.run()
     
