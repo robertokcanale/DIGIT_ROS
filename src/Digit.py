@@ -22,10 +22,10 @@ class DIGIT:
             print("DIGIT " + SERIAL_NUMBER + " is not connected!")  
             sys.exit(1)
    
-        self.current_frame_bgr = []
-        self.current_frame_lab = []
-        self.diff_bgr = []
-        self.diff_lab = []
+        self.current_frame_bgr = Image()
+        self.current_frame_lab = Image()
+        self.diff_bgr = Image()
+        self.diff_lab = Image()
         self.contact_center = contact_center()
         self.bridge = CvBridge()
 
@@ -37,12 +37,12 @@ class DIGIT:
         while (time.time() - start_time <  2):
             baseline.append(self.object.get_frame())
         self.baseline_bgr = compute_baseline(baseline)
-        self.baseline_lab = cv2.cvtColor(self.sensor["baseline"], cv2.COLOR_BGR2LAB)
+        self.baseline_lab = cv2.cvtColor(self.baseline_bgr, cv2.COLOR_BGR2LAB)
         
         #Setting all the publishers
-        self.DIGIT_PUBLISHERS()
+        self.DIGIT_Publishers()
         
-    def DIGIT_Publisher (self,rgb_img_topic:str = "rgb", 
+    def DIGIT_Publishers(self,rgb_img_topic:str = "rgb", 
                          lab_img_topic:str = "lab", 
                          diff_rgb_img_topic:str = "diff_rgb",
                          diff_lab_img_topic:str = "diff_lab", 
@@ -58,7 +58,7 @@ class DIGIT:
         self.contact_center_publisher = rospy.Publisher("/" + self.name + "/" + contact_center_topic, contact_center, queue_size=queue_size)
         
     def run(self):
-        self.current_frame_bgr = cv2.GaussianBlur(self.object.get_frame(),(11,11),5)
+        self.current_frame_bgr =self.object.get_frame() #cv2.GaussianBlur(self.object.get_frame(),(11,11),5)
         self.current_frame_lab = cv2.cvtColor( self.current_frame_bgr, cv2.COLOR_BGR2LAB) 
 
         base_B,base_G,base_R = cv2.split(self.baseline_bgr)
@@ -70,19 +70,25 @@ class DIGIT:
         self.diff_lab, res_lab, output_img_lab = compute_diff(curr_b, base_b)
         self.diff_bgr, res_bgr, output_img_bgr = compute_diff(curr_B, base_B)
 
-        poly, (major_axis, major_axis_end), (minor_axis, minor_axis_end), center = res_lab
-        self.contact_center.header = Header()
-        self.contact_center.header.stamp = rospy.Time.now()
-        self.contact_center.center = center
-        self.contact_center.major_axis = major_axis
-        self.contact_center.major_axis_end = major_axis_end
-        self.contact_center.minor_axis = minor_axis
-        self.contact_center.minor_axis_end = minor_axis_end
+        if not res_lab is None:
+            poly, (major_axis, major_axis_end), (minor_axis, minor_axis_end), center = res_lab
+            self.contact_center.header = Header()
+            self.contact_center.header.stamp = rospy.Time.now()
+            self.contact_center.center.x = center[0]
+            self.contact_center.center.y = center[1]
+            self.contact_center.major_axis.x  = major_axis[0]
+            self.contact_center.major_axis.y = major_axis[1]
+            self.contact_center.major_axis_end.x  = major_axis_end[0]
+            self.contact_center.major_axis_end.y = major_axis_end[1]
+            self.contact_center.minor_axis.x  = minor_axis[0]
+            self.contact_center.minor_axis.y = minor_axis[1]
+            self.contact_center.minor_axis_end.x  = minor_axis_end[0]
+            self.contact_center.minor_axis_end.y = minor_axis_end[1]
+            self.contact_center_publisher.publish(self.contact_center)
 
-        
         self.rgb_publisher.publish(self.bridge.cv2_to_imgmsg(self.current_frame_bgr))
         self.lab_publisher.publish(self.bridge.cv2_to_imgmsg(self.current_frame_lab))
         self.diff_rgb_publisher.publish(self.bridge.cv2_to_imgmsg(self.diff_bgr))
         self.diff_lab_publisher.publish(self.bridge.cv2_to_imgmsg(self.diff_lab))
         self.output_publisher.publish(self.bridge.cv2_to_imgmsg(output_img_lab))
-        self.contact_center_publisher.publish(self.contact_center)
+

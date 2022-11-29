@@ -1,7 +1,7 @@
 
 import cv2
 import numpy as np
-from contact_area_functions import *
+from utils.contact_area_functions import *
 
 def compute_baseline(baseline):
     num_images = len(baseline)
@@ -14,7 +14,7 @@ def compute_baseline(baseline):
     return baseline
 
 def compute_diff(curr, base):
-    diff, res = a(target=curr.copy(),base=base)
+    diff, res = contact_area(target=curr.copy(),base=base)
     if not res is None:
         poly, (major_axis, major_axis_end), (minor_axis, minor_axis_end), center = res
         output = draw_major_minor(cv2.cvtColor(curr.copy(), cv2.COLOR_GRAY2BGR), poly, major_axis, major_axis_end, minor_axis, minor_axis_end)

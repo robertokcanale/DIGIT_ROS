@@ -22,6 +22,15 @@ find_package(catkin REQUIRED COMPONENTS
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
 catkin_python_setup()
 
+
+add_service_files(
+  FILES
+  inference_request.srv
+)
+add_message_files(
+  FILES
+  contact_center.msg
+)
 generate_messages(
   DEPENDENCIES
   std_msgs

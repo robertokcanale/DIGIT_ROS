@@ -1,9 +1,10 @@
+#!/usr/bin/env python3
 
 import rospy
 import numpy as np
 from utils.contact_area_functions import *
 from utils.sensor_functions import *
-from DIGIT import DIGIT
+from digit_ros.src.Digit import DIGIT
 
 
 
@@ -26,7 +27,7 @@ def main():
     diff_lab_img2 = rospy.get_param(ns + "diff_lab_img2")
     output_img2 = rospy.get_param(ns + "output_img2")
     
-    rospy.init_node("digit_ros_" + sn2)
+    rospy.init_node("digit_ros_" + sn1 + sn2)
     digit1 = DIGIT(sn1, name1)
     digit1.DIGIT_Publisher(rgb_img1, lab_img1, diff_rgb_img1, diff_lab_img1, output_img1)
     digit1.run()

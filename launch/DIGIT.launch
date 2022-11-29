@@ -1,9 +1,9 @@
 <launch>
   <node  pkg="digit_ros" name="digit_ros" type="single_sensor.py" output="screen" ns="DIGIT"/>
     <!-- topic name for DIGIT serial Number -->
-    <param name="sn" type="str" value="D429" />
+    <param name="sn" type="str" value="D20488" />
     <!-- topic name for DIGIT -->    
-    <param name="name" type="str" value="LeftGripper" />
+    <param name="name" type="str" value="MyDigit" />
     <!-- topic name for real time rgb image -->
     <param name="rgb_img" type="str" value="rgb_img" />
     <!-- topic name for real time lab image -->
