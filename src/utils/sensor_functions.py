@@ -1,28 +1,52 @@
 
+from digit_interface import Digit
 import cv2
+import time
 import numpy as np
-from utils.contact_area_functions import *
 
-def compute_baseline(baseline):
-    num_images = len(baseline)
-    canvas = np.zeros(baseline[0].shape)
-    for image in baseline:
+def compute_baseline(sensor):
+    num_images = len(sensor["baseline"])
+    print(num_images)
+    canvas = np.zeros(sensor["baseline"][0].shape)
+    for image in sensor["baseline"]:
         canvas += image
     canvas /= num_images
-    baseline = canvas.astype(np.uint8)
-    baseline = cv2.GaussianBlur(baseline,(11,11),0)
-    return baseline
+    sensor["baseline"] = canvas.astype(np.uint8)
+    sensor["baseline"] = cv2.GaussianBlur(sensor["baseline"],(11,11),0)
+    return sensor
 
-def compute_diff(curr, base):
-    diff, res = contact_area(target=curr.copy(),base=base)
-    if not res is None:
-        poly, (major_axis, major_axis_end), (minor_axis, minor_axis_end), center = res
-        output = draw_major_minor(cv2.cvtColor(curr.copy(), cv2.COLOR_GRAY2BGR), poly, major_axis, major_axis_end, minor_axis, minor_axis_end)
-    else:
-        output = curr
-        output = cv2.cvtColor(output, cv2.COLOR_GRAY2BGR)
-    diff = (diff * 8. * 255)
-    diff = np.clip(diff, 0., 255.)
-    diff = diff.astype(np.uint8)
-                        
-    return diff, res, output
+def recompute_baseline(sensor):
+    sensor["baseline"] = []
+    # collecting a set of images to denoise and average into a baseline
+    start_time = time.time()
+    while (time.time() - start_time <  1.5):
+        sensor["baseline"].append(sensor["object"].get_frame())
+    sensor = compute_baseline(sensor)
+    return sensor
+
+def initialize_sensors(sensors,sensor_amesensor_serial_number_list, sensor_name_list, fps = Digit.STREAMS["QVGA"]["fps"]["60fps"], intensity =10):
+    for sn, name  in zip(sensor_amesensor_serial_number_list, sensor_name_list):      
+        sensor = {}
+        sensor["name"] = name
+        sensor["serial_number"] = sn
+        sensor["object"] = Digit(sn, name)
+        # initialize the connection and config
+        sensor["object"].connect()
+        sensor["object"].set_fps(fps)
+        sensor["object"].set_intensity(intensity)
+        sensor["baseline"] = []
+        sensor["contact_center"] = None
+        
+        sensors[name] = sensor
+
+    # wait for the light to fully initialize
+    start_time = time.time()
+    while (time.time() - start_time <  2):
+        continue
+    # collecting a set of images to denoise and average into a baseline
+    start_time = time.time()
+    while (time.time() - start_time <  2):
+        for _, sensor in sensors.items():
+            sensor["baseline"].append(sensor["object"].get_frame())
+    
+    return sensors

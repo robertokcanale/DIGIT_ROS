@@ -1,12 +1,9 @@
 import numpy as np
 
-def compute_rotation_from_normal(normal):
-    nx, ny, nz = normal
-    pitch = np.arctan2(-nx, nz) / np.pi * 180.
-    roll = np.arctan2(ny, nz) / np.pi * 180.
-    return pitch, roll
-
 def contact_center_distance3D(center_1, center_2, gripper_distannce):
+    #taking first sensor plane as 0
+    #taking second sensor plane as a plane with distance z, and flipping wrt 3D world
+    #This is TBD with teerawat
     center_1 = center_1[..., 0]
     center_2[0] = -center_2[0]
     center_2[1] = -center_2[1]
@@ -14,9 +11,16 @@ def contact_center_distance3D(center_1, center_2, gripper_distannce):
     d = np.linalg.norm(center_2-center_1)   
     return d
 
+
 def contact_center_distance2D(center_1, center_2):
     d = np.linalg.norm(center_2-center_1)   
     return d
+
+def compute_rotation_from_normal(normal):
+    nx, ny, nz = normal
+    pitch = np.arctan2(-nx, nz) / np.pi * 180.
+    roll = np.arctan2(ny, nz) / np.pi * 180.
+    return pitch, roll
 
 def rotation_between2sensors(sensors):
     if (not sensors[0]["contact_center"] is None) and (not sensors[1]["contact_center"] is None):
