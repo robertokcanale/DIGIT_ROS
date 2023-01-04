@@ -1,10 +1,9 @@
-import socket, argparse, torch, time, cv2, threading, tkinter
+import torch, time, cv2, os
 import numpy as np
-from tkinter import messagebox
 from models import *
 from digit_interface import Digit
-from contact_area_functions import *
-from sensor_functions import *
+from utils.contact_area_functions import *
+from utils.sensor_functions import *
 import torch.backends.cudnn as cudnn
 from MessagePopup import Popup
 
@@ -22,9 +21,10 @@ class GraspStability:
             self.DIGIT_INTENSITY = 10
             self.fps = 5
             self.numImg = 8
-            self.weights = weights
+            self.weights = os.getcwd() + weights
             self.running = True
-            if lstm:
+            print(os.getcwd())
+            if lstm == 1:
                 self.net = self.build_model_lstm()
             else:
                 self.net, self.featureNet = self.build_model()
@@ -75,7 +75,7 @@ class GraspStability:
 
     def run(self):
         for sn, sensor in self.sensors.items():
-            sensosensorr = recompute_baseline(sensor)
+            sensor = recompute_baseline(sensor)
             sensor["baseline"] = cv2.cvtColor(sensor["baseline"], cv2.COLOR_BGR2LAB)
             _,_,base_b = cv2.split(sensor["baseline"])
             sensor["baseline"] = base_b
@@ -147,7 +147,7 @@ class GraspStability:
                 sensor["processed_diff_list"] = diff_imgs_list
 
             self.image_vis = cv2.vconcat(image_vis_list)
-            # TODO process the data for inferencing here WILL NEED TO UPDATE SOON
+            #TODO process the data for inferencing here WILL NEED TO UPDATE SOON
             filtered_rgb_imgs_LEFT = self.sensors["left"]["processed_rgb_list"]
             filtered_diff_imgs_LEFT = self.sensors["left"]["processed_diff_list"]
             filtered_rgb_imgs_RIGHT = self.sensors["right"]["processed_rgb_list"]
@@ -181,22 +181,15 @@ class GraspStability:
             #DUMMY DATA
             stability = pred_class
             message = "({:.1f}, 0)".format(stability)
-            print("==> replying...")
+            print("==> Inference Result...")
             print(message)
-            print("///////////////")
-            try:
-                self.connection.sendall(str.encode(message))
-            except:
-                self.connection.close()
-                self.connection = None
-                break
             Popup(pred_class)
             return(pred_class)
 
 
     def run_lstm(self):
         for sn, sensor in self.sensors.items():
-            sensosensorr = recompute_baseline(sensor)
+            sensor = recompute_baseline(sensor)
             sensor["baseline"] = cv2.cvtColor(sensor["baseline"], cv2.COLOR_BGR2LAB)
             _,_,base_b = cv2.split(sensor["baseline"])
             sensor["baseline"] = base_b
@@ -290,15 +283,8 @@ class GraspStability:
             #DUMMY DATA
             stability = pred_class
             message = "({:.1f}, 0)".format(stability)
-            print("==> replying...")
+            print("==> Inference Result...")
             print(message)
-            print("///////////////")
-            try:
-                self.connection.sendall(str.encode(message))
-            except:
-                self.connection.close()
-                self.connection = None
-                break
             Popup(pred_class)
             return(pred_class)
 
