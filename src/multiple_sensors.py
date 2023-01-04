@@ -4,7 +4,7 @@ import rospy
 import numpy as np
 from utils.contact_area_functions import *
 from utils.sensor_functions import *
-from digit_ros.src.Digit import DIGIT
+from Digit import DIGIT
 
 
 
