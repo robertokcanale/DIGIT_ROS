@@ -9,7 +9,8 @@ from Digit import DIGIT
 
 
 def main():
-    ns = rospy.get_name() + "/"
+    # ns = rospy.get_name() + "/"
+    ns = "/"
 
     sn1 = rospy.get_param(ns + "sn1")
     name1 = rospy.get_param(ns + "name1")
@@ -29,13 +30,15 @@ def main():
     
     rospy.init_node("digit_ros_" + sn1 + sn2)
     digit1 = DIGIT(sn1, name1)
-    digit1.DIGIT_Publisher(rgb_img1, lab_img1, diff_rgb_img1, diff_lab_img1, output_img1)
-    digit1.run()
+    digit1.DIGIT_Publishers(rgb_img1, lab_img1, diff_rgb_img1, diff_lab_img1, output_img1)
     
     digit2 = DIGIT(sn2, name2)
-    digit2.DIGIT_Publisher(rgb_img2, lab_img2, diff_rgb_img2, diff_lab_img2, output_img2)
-    digit2.run()
-    rospy.spin()
+    digit2.DIGIT_Publishers(rgb_img2, lab_img2, diff_rgb_img2, diff_lab_img2, output_img2)
+    
+    while not rospy.is_shutdown():
+        digit1.run()
+        digit2.run()
+    # rospy.spin()
 
         
 if __name__ == '__main__':

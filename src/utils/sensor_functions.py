@@ -4,16 +4,16 @@ import cv2
 import time
 import numpy as np
 
-def compute_baseline(sensor):
-    num_images = len(sensor["baseline"])
+def compute_baseline(baseline_images):
+    num_images = len(baseline_images)
     print(num_images)
-    canvas = np.zeros(sensor["baseline"][0].shape)
-    for image in sensor["baseline"]:
+    canvas = np.zeros(baseline_images[0].shape)
+    for image in baseline_images:
         canvas += image
     canvas /= num_images
-    sensor["baseline"] = canvas.astype(np.uint8)
-    sensor["baseline"] = cv2.GaussianBlur(sensor["baseline"],(11,11),0)
-    return sensor
+    baseline_image = canvas.astype(np.uint8)
+    baseline_image = cv2.GaussianBlur(baseline_image,(11,11),0)
+    return baseline_image
 
 def recompute_baseline(sensor):
     sensor["baseline"] = []

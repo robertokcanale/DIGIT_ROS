@@ -10,15 +10,16 @@ from digit_ros.msg import contact_center
 
 
 class DIGIT:
-    def __init__ (self, SERIAL_NUMBER, SENSOR_NAME, FPS_CONFIG = Digit.STREAMS["QVGA"]["fps"]["60fps"], intensity:int = 10):
+    def __init__ (self, SERIAL_NUMBER, SENSOR_NAME, FPS_CONFIG = Digit.STREAMS["QVGA"]["fps"]["60fps"], intensity = 10):
         self.sn = SERIAL_NUMBER         
-        self.name = SENSOR_NAME         
+        self.name = SENSOR_NAME
         self.object =  Digit(SERIAL_NUMBER, SENSOR_NAME)  
         try:
             self.object.connect()
             self.object.set_fps(FPS_CONFIG)
             self.object.set_intensity(intensity)   
-        except:
+        except Exception as e:
+            print(e)
             print("DIGIT " + SERIAL_NUMBER + " is not connected!")  
             sys.exit(1)
    
@@ -55,7 +56,8 @@ class DIGIT:
         self.contact_center_publisher = rospy.Publisher("/" + self.name + "/" + contact_center_topic, contact_center, queue_size=queue_size)
         
     def run(self):
-        self.current_frame_bgr =self.object.get_frame() #cv2.GaussianBlur(self.object.get_frame(),(11,11),5)
+        # self.current_frame_bgr =self.object.get_frame() #cv2.GaussianBlur(self.object.get_frame(),(11,11),5)
+        self.current_frame_bgr = cv2.GaussianBlur(self.object.get_frame(),(11,11),5)
         self.current_frame_lab = cv2.cvtColor( self.current_frame_bgr, cv2.COLOR_BGR2LAB) 
 
         base_B,base_G,base_R = cv2.split(self.baseline_bgr)
@@ -64,8 +66,8 @@ class DIGIT:
         curr_B,curr_G,curr_R = cv2.split(self.current_frame_bgr)
         curr_l,curr_a,curr_b = cv2.split(self.current_frame_lab)
         
-        self.diff_lab, res_lab, output_img_lab = compute_diff(curr_b, base_b)
-        self.diff_bgr, res_bgr, output_img_bgr = compute_diff(curr_B, base_B)
+        self.diff_lab, res_lab = contact_area(target=curr_b.copy(),base=base_b.copy())
+        self.diff_bgr, res_bgr = contact_area(target=self.current_frame_bgr.copy(),base=self.baseline_bgr.copy())
 
         if not res_lab is None:
             poly, (major_axis, major_axis_end), (minor_axis, minor_axis_end), center = res_lab
@@ -82,6 +84,11 @@ class DIGIT:
             self.contact_center.minor_axis_end.x  = minor_axis_end[0]
             self.contact_center.minor_axis_end.y = minor_axis_end[1]
             self.contact_center_publisher.publish(self.contact_center)
+            
+            output_img_lab = draw_major_minor(cv2.cvtColor(curr_b.copy(), cv2.COLOR_GRAY2BGR), poly, major_axis, major_axis_end, minor_axis, minor_axis_end)
+        else:
+                output_img_lab = curr_b
+                output_img_lab = cv2.cvtColor(output_img_lab, cv2.COLOR_GRAY2BGR)
 
         self.rgb_publisher.publish(self.bridge.cv2_to_imgmsg(self.current_frame_bgr))
         self.lab_publisher.publish(self.bridge.cv2_to_imgmsg(self.current_frame_lab))
